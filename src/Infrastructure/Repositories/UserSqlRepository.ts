@@ -1,6 +1,6 @@
 import IUserRepository from "../../InterfaceAdapters/IRepositories/IUserRepository";
 import {DeleteResult, getRepository, Repository} from "typeorm";
-import User from "../Entities/TypeORM/User";
+import User from "../Schema/TypeORM/User";
 import {injectable} from "inversify";
 import ErrorException from "../../Application/Shared/ErrorException";
 import StatusCode from "../../Presentation/Shared/StatusCode";

@@ -4,9 +4,11 @@ import ICreateConnection from "../../InterfaceAdapters/IDatabase/ICreateConnecti
 import IUserDocument from "../../InterfaceAdapters/IEntities/Mongoose/IUserDocument";
 import IRoleDocument from "../../InterfaceAdapters/IEntities/Mongoose/IRoleDocument";
 import IItemDocument from "../../InterfaceAdapters/IEntities/Mongoose/IItemDocument";
+import INotificationDocument from "../../InterfaceAdapters/IEntities/Mongoose/INotificationDocument";
 import ItemSchema from "../Schema/Item";
 import RoleSchema from "../Schema/Role";
 import UserSchema from "../Schema/User";
+import {EmailNotificationSchema, NotificationSchema, PushNotificationSchema} from "../Schema/Notification";
 import IFileDocument from "../../InterfaceAdapters/IEntities/Mongoose/IFileDocument";
 import FileSchema from "../Schema/File";
 
@@ -28,10 +30,16 @@ class MongooseCreateConnection implements ICreateConnection
 
         connection = await mongoose.createConnection(uri, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex:true });
 
-        await connection.model<IUserDocument>('User', UserSchema);
-        await connection.model<IRoleDocument>('Role', RoleSchema);
-        await connection.model<IItemDocument>('Item', ItemSchema);
-        await connection.model<IFileDocument>('File', FileSchema);
+        // Domain
+        connection.model<IUserDocument>('User', UserSchema);
+        connection.model<IRoleDocument>('Role', RoleSchema);
+        connection.model<IItemDocument>('Item', ItemSchema);
+        connection.model<IFileDocument>('File', FileSchema);
+
+        // Notifications
+        const NotificationModel = connection.model<INotificationDocument>('Notification', NotificationSchema);
+        NotificationModel.discriminator('EmailNotification', EmailNotificationSchema);
+        NotificationModel.discriminator('PushNotification', PushNotificationSchema);
 
         return connection;
     }
